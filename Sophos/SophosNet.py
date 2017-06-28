@@ -58,6 +58,12 @@ class Model():
         model_display += "---------------"
         return model_display
 
+    def feed(self, X):
+        lastOut = X
+        for layer in self.components:
+            lastOut = layer.feed(lastOut)
+        return lastOut
+
     def predict(self, X):
         pass
 
@@ -67,7 +73,7 @@ class Model():
 
 class Layer():
     
-    def __init__(self, num_neurons, num_inputs):
+    def __init__(self, num_inputs, num_neurons):
         self.num_neurons = num_neurons
         self.num_inputs = num_inputs
         # Build Psi - Random Weights
@@ -87,6 +93,9 @@ class Layer():
         
         # Multiply
         return X * self.W
+    
+    def getShape(self):
+        return [self.num_inputs + 1, self.num_neurons]
         
     def getWeights(self):
         return self.W

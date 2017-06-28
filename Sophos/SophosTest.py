@@ -1,14 +1,14 @@
 import unittest
-import SophosMain
+import SophosNet as sn
+import numpy as np
 
 class MainTests(unittest.TestCase):
 
 	def setUp(self):
+		self.model = sn.Model()
 		# i = np.matrix(('1, 3'))
-		# model = Model()
-
 		# # Define Model Layers
-		# L1 = Layer(3, 2)
+		# L1 = sn.Layer(3, 2)
 		# model.add(L1)
 		# activation1 = Activation('sigmoid')
 		# model.add(activation1)
@@ -18,6 +18,17 @@ class MainTests(unittest.TestCase):
 		# model.show()
 		pass
 
+	def test_FeedLayer(self):
+		i = np.matrix(('1, 3'))
+		
 
-	def test_mainTest(self):
-		self.assertEqual(1, 1)
+	def test_LayerShape(self):
+		baseShape = [2, 3]
+		expectedShape = [3, 3]
+		L1 = sn.Layer(baseShape[0], baseShape[1])
+		layerShape = L1.getShape()
+
+		self.assertEqual(expectedShape, layerShape)
+
+if __name__ == '__main__':
+	unittest.main()

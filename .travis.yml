@@ -6,4 +6,4 @@ python:
 install:
   - pip install numpy
 
-script: SophosTest
+script: Sophos/SophosTest

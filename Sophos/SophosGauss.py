@@ -21,4 +21,7 @@ class Model():
 
 	def mu_class(self, data):
 		return np.mean(data, axis=0)
+	
+	def mu_data(self, data):
+		# TODO - Finish this class
 		pass

@@ -1,11 +1,13 @@
 import unittest
 import SophosNet as sn
+import SophosGauss as sg
 import numpy as np
 
 class MainTests(unittest.TestCase):
 
 	def setUp(self):
 		self.model = sn.Model()
+		self.model_gauss = sg.Model()
 		# i = np.matrix(('1, 3'))
 		# # Define Model Layers
 		# L1 = sn.Layer(3, 2)
@@ -16,11 +18,20 @@ class MainTests(unittest.TestCase):
 		# model.add(Activation('sigmoid'))
 		# model.train(i, 1)
 		# model.show()
-		pass
 
 	def test_FeedLayer(self):
 		i = np.matrix(('1, 3'))
-		
+
+	def test_GaussModel(self):
+		# Mean and covariance
+		mu = np.matrix('0 0')
+		sigma = np.matrix('1 0; 0 1')
+
+		# Input point
+		x = np.matrix('2 2')
+		p1 = self.model_gauss.predictGaussian(mu, sigma, x)
+		output = p1.item(0,0)
+		self.assertEqual(output, 0.0029150244650281935)
 
 	def test_LayerShape(self):
 		baseShape = [2, 3]

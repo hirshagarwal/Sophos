@@ -3,7 +3,8 @@ python:
 - "3.5"
 - "3.6"
 
+cache: pip
 install:
   - pip install numpy
-
-script: Sophos/SophosTest
+script:
+  - python Sophos/SophosTest.py

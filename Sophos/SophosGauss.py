@@ -18,3 +18,7 @@ class Model():
 		# Evaluate Gaussian
 		p = 1/np.sqrt((2*np.pi)**d*np.linalg.det(covar)) * np.exp(-0.5*(x-mu).transpose()*np.linalg.inv(covar)*(x-mu))
 		return p
+
+	def mu_class(self, data):
+		return np.mean(data, axis=0)
+		pass

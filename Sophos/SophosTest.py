@@ -33,6 +33,14 @@ class MainTests(unittest.TestCase):
 		output = p1.item(0,0)
 		self.assertEqual(output, 0.0029150244650281935)
 
+	def test_GaussMuClass(self):
+		input_data = np.matrix('1 1; 2 2; 3 3; 5 5')
+		expectedResult = np.matrix('2.75 2.75')
+		result = self.model_gauss.mu_class(input_data)
+		testValue = np.array_equal(expectedResult, result)
+		self.assertTrue(testValue)
+		pass
+
 	def test_LayerShape(self):
 		baseShape = [2, 3]
 		expectedShape = [3, 3]

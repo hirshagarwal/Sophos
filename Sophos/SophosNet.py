@@ -37,8 +37,9 @@ class Model():
         error_total = np.sum(0.5 * np.square(Y-pred))
         self.error_total = error_total
         # Get error for output layer
+        
         error = list()
-
+        
 
         # # error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
         # for i in range(len(components)-2, 0, -1):

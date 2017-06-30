@@ -1,14 +1,8 @@
 
 # coding: utf-8
 
-# In[399]:
-
-
 # Setup import
 import numpy as np
-
-
-# In[524]:
 
 
 """ Model Class

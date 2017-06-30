@@ -33,25 +33,31 @@ class Model():
         
         # Optimize
         components = self.components
+        # Store the total error
+        error_total = np.sum(0.5 * np.square(Y-pred))
+        self.error_total = error_total
         # Get error for output layer
         error = list()
-        error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
-        for i in range(len(components)-2, 0, -1):
-            component = components[i]
-            if type(component) == Layer:
-                # Error for hidden layers
-                error.append(np.sum((component.getWeights() * error[0]) * components[i+1].d_feed(component.getOutput()))) 
-        print("Error:", error)
+
+
+        # # error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
+        # for i in range(len(components)-2, 0, -1):
+        #     component = components[i]
+        #     if type(component) == Layer:
+        #         # Error for hidden layers
+        #         error.append(np.sum((component.getWeights() * error[0]) * components[i+1].d_feed(component.getOutput()))) 
+        # print("Error:", error)
 
         # Adjust Weights Based on Error
-        
+
         
         return lastOut
     
     def show(self):
         model_display = ""
         for component in self.components:
-            model_display += 'Type: {}\n'.format(component.getType())
+            model_display += 'Type: {}'.format(component.getType())
+            model_display += ' - Size: {}\n'.format(component.getShape())
         model_display += "---------------"
         return model_display
 
@@ -60,6 +66,8 @@ class Model():
         for layer in self.components:
             lastOut = layer.feed(lastOut)
         return lastOut
+    def getTotalError(self):
+        return self.error_total
 
     def predict(self, X):
         pass
@@ -84,7 +92,6 @@ class Layer():
         # Error checking
         if X.shape[1] != self.W.shape[0]:
             raise ValueError("Wrong input shape")
-            
         # Remember Last Output
         self.last_output = X * self.W
         

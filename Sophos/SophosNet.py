@@ -42,6 +42,9 @@ class Model():
                 # Error for hidden layers
                 error.append(np.sum((component.getWeights() * error[0]) * components[i+1].d_feed(component.getOutput()))) 
         print("Error:", error)
+
+        # Adjust Weights Based on Error
+        
         
         return lastOut
     

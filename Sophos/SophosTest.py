@@ -20,9 +20,20 @@ class MainTests(unittest.TestCase):
 
 	def test_ForwardProp(self):
 		self.model = sn.Model()
-		self.model.add(sn.Layer(2, 2))
-		self.model.add(sn.Layer(2, 2))
-		weights1 = np.matrix('.35')
+		l1 = sn.Layer(2, 2)
+		l2 = sn.Layer(2, 2)
+		l3 = sn.Layer(2, 1)
+		self.model.add(l1)
+		self.model.add(l2)
+		self.model.add(l3)
+		weights = np.matrix('.5 .5; .5 .5; .5 .5')
+		l1.setWeights(weights)
+		l2.setWeights(weights)
+		l3.setWeights(np.matrix('.5; .5; .5'))
+		feed_x = np.matrix(('1 1'))
+		result = self.model.feed(feed_x)
+		# print(self.model.feed(feed_x))
+		self.assertEqual(result, 2.5)
 
 	def test_FeedLayer(self):
 		i = np.matrix(('1, 3, 3'))

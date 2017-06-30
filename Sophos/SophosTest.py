@@ -6,7 +6,6 @@ import numpy as np
 class MainTests(unittest.TestCase):
 
 	def setUp(self):
-		self.model = sn.Model()
 		self.model_gauss = sg.Model()
 		# i = np.matrix(('1, 3'))
 		# # Define Model Layers
@@ -19,8 +18,20 @@ class MainTests(unittest.TestCase):
 		# model.train(i, 1)
 		# model.show()
 
+	def test_ForwardProp(self):
+		self.model = sn.Model()
+		self.model.add(sn.Layer(2, 2))
+		self.model.add(sn.Layer(2, 2))
+		weights1 = np.matrix('.35')
+
 	def test_FeedLayer(self):
-		i = np.matrix(('1, 3'))
+		i = np.matrix(('1, 3, 3'))
+		input_with_bias = np.matrix(('1, 1, 3, 3'))
+		l1 = sn.Layer(3,2)
+		l1_output = l1.feed(i)
+		expected_result = input_with_bias * l1.getWeights()
+		testValue = np.array_equal(l1_output, expected_result)
+		self.assertTrue(testValue)
 
 	def test_GaussModel(self):
 		# Mean and covariance

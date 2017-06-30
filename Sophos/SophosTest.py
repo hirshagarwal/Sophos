@@ -27,8 +27,27 @@ class MainTests(unittest.TestCase):
         
         print(model.getTotalError())
 
+    def test_Activation(self):
+        model = sn.Model()
+        x_input = np.matrix('.05 .1')
+        y = np.matrix('.01 .99')
+        w1 = np.matrix('.35 .35; .15 .25; .20 .30')
+        w2 = np.matrix('.6 .6; .4 .5; .45 .55')
+        l1 = sn.Layer(2, 2)
+        l2 = sn.Layer(2, 2)
+        l1.setWeights(w1)
+        l2.setWeights(w2)
+        activation = sn.Activation('sigmoid')
+        model.add(l1)
+        model.add(activation)
+        model.add(l2)
+        model.add(activation)
+        model.train(x_input, y)
+        # Value confirmed from online source and by hand
+        self.assertEqual(model.getTotalError(), 0.29837110876000272)
 
     def test_Training(self):
+        # TODO - Add test for training model
         pass
 
     def test_ForwardProp(self):

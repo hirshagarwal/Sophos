@@ -13,6 +13,7 @@ class Model():
     # Model will contain sequence of layers to feed data 
     def __init__(self):
         self.components = list()
+        self.lr = 0.5
     
     # Add a layer to the model
     def add(self, component):
@@ -33,22 +34,76 @@ class Model():
         
         # Optimize
         components = self.components
+        # Store the total error
+        error_total = np.sum(0.5 * np.square(Y-pred))
+        self.error_total = error_total
         # Get error for output layer
+        
+
+        last_dE = 0
+        last_delta = 0
         error = list()
-        error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
-        for i in range(len(components)-2, 0, -1):
-            component = components[i]
-            if type(component) == Layer:
-                # Error for hidden layers
-                error.append(np.sum((component.getWeights() * error[0]) * components[i+1].d_feed(component.getOutput()))) 
-        print("Error:", error)
+        last_weights = 0
+        # Iterate over every neuron to compute delta 
+        for i in range(len(components)):
+            # Set the current component
+            current_component_index = len(components) - i -1
+            current_component = components[current_component_index]
+
+            layer_output = pred
+            # If the component is a layer adjust neuron weights
+            if type(current_component) is Layer:
+                # Calculate dE/dw
+                
+                # No cached value - back of net
+                if last_dE is 0:
+                    # dE/dOut
+                    dEdOut = layer_output - Y
+                    last_dE = dEdOut
+                # print("dE/dOut: ", dEdOut)
+
+                # Calculate dOut/dNet
+                activation_layer = components[current_component_index + 1]
+                dOutdNet = activation_layer.d_feed(activation_layer.getOutput())
+                # print("dOut/dNet: ", dOutdNet)
+
+                # Calculate dNet/dW
+                if current_component_index == 0:
+                    dNetdW = X
+                    # Add Bias
+                    dNetdW = np.insert(dNetdW, 0, 1, axis=1)
+                else:
+                    dNetdW = components[current_component_index-1].getOutput()
+                    # Add Bias
+                    dNetdW = np.insert(dNetdW, 0, 1, axis=1)
+                # print("dNet/dW: ", dNetdW)
+                
+                if current_component_index + 2 < len(components):
+                    prev_weights = last_weights
+                    prev_weights = prev_weights[1:]
+                    dEdOut = last_delta * prev_weights.T
+                    # print("new dEdOut: ", dEdOut)
+
+                delta = np.multiply(dEdOut, dOutdNet)
+                # print("Delta: ", delta)
+                # dEdW = np.multiply(delta, dNetdW)
+                dEdW = np.multiply(dNetdW.T, delta)
+                # print("dE/dw: ", dEdW)
+                last_weights = current_component.getWeights()
+                # Update Weights
+                current_component.updateWeights(dEdW, self.lr)
+                last_delta = delta
+                # print("Updated Weights: ", current_component.getWeights())
+                # print("delta: ", last_delta)
+
         
         return lastOut
     
     def show(self):
         model_display = ""
         for component in self.components:
-            model_display += 'Type: {}\n'.format(component.getType())
+            model_display += 'Type: {}'.format(component.getType())
+            model_display += ' - Size: {}\n'.format(component.getShape())
         model_display += "---------------"
         return model_display
 
@@ -58,8 +113,20 @@ class Model():
             lastOut = layer.feed(lastOut)
         return lastOut
 
-    def predict(self, X):
-        pass
+    def getTotalError(self):
+        return self.error_total
+
+    def predictStep(self, X):
+        # Step Function for prediction
+        lastOut = X
+        for layer in self.components:
+            lastOut = layer.feed(lastOut)
+        if lastOut > .5:
+            return 1
+        return 0
+
+    def setLearningRate(self, lr):
+        self.lr = lr
 
 
 # In[525]:
@@ -73,6 +140,7 @@ class Layer():
         # Build Psi - Random Weights
         self.W = np.random.random_sample((num_inputs + 1, num_neurons))
         self.last_output = 0
+        self.learning_rate = 0.5
         
     def feed(self, X):
         biases = np.ones(X.shape[0])
@@ -81,9 +149,10 @@ class Layer():
         # Error checking
         if X.shape[1] != self.W.shape[0]:
             raise ValueError("Wrong input shape")
-            
         # Remember Last Output
+        last_output_no_bias = X * self.W
         self.last_output = X * self.W
+
         
         # Multiply
         return X * self.W
@@ -98,8 +167,9 @@ class Layer():
         # Set all of the weights to a new value
         self.W = X
         
-    def updateWeights(self, X):
+    def updateWeights(self, X, lr):
         # Adjust Weights by a value
+        self.W = self.W - np.multiply(lr, X)
         pass
     
     def getOutput(self):
@@ -120,21 +190,34 @@ class Activation():
     
     def feed(self, X):
         if self.activation_function == 'step':
-            return np.piecewise(X, [X < 0, X >= 0], [0, 1])
+            out = np.piecewise(X, [X < 0, X >= 0], [0, 1])
         if self.activation_function == 'sigmoid':
-            return 1/(1 + np.exp(-X))
+            out = 1/(1 + np.exp(-X))
+            # self.d_output = np.multiply(X, (-X + 1))
         if self.activation_function == 'relu':
             np.maximum(X, 0, X)
-            return X
+            out =  X
+        self.last_output = out
+        return out
+
+    # Derivative of activation
     def d_feed(self, X):
         if self.activation_function == 'sigmoid':
-            return X * (1-X)
+            out = np.multiply(X, (-X + 1))
         if self.activation_function == 'relu':
-            return np.piecewise(X, [X < 0, X >= 0], [0, 1])
-        
+            out = np.piecewise(X, [X < 0, X >= 0], [0, 1])
+        self.d_output = out
+        return out
+
+
     def getType(self):
         return "Activation Function {fxn}".format(fxn=self.activation_function)
 
+    def getOutput(self):
+        return self.last_output
+
+    def getDerivativeOutput(self):
+        return self.d_output
 
 # In[529]:
 

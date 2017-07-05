@@ -18,16 +18,19 @@ class MainTests(unittest.TestCase):
         l2 = sn.Layer(2, 2)
         l1.setWeights(w1)
         l2.setWeights(w2)
-        activation = sn.Activation('sigmoid')
+        activation1 = sn.Activation('sigmoid')
+        activation2 = sn.Activation('sigmoid')
         print("Total Error Test -")
         model.add(l1)
-        model.add(activation)
+        model.add(activation1)
         model.add(l2)
-        model.add(activation)
-        model.train(x_input, y)
-        
-        print(model.getTotalError())
-
+        model.add(activation2)
+        original_output = model.feed(x_input)
+        for i in range(10000):
+            model.train(x_input, y)
+            print("Total Error:", model.getTotalError())
+        print("Original Output: ", original_output)
+        print("Trained Output: ", model.feed(x_input))
     def test_Activation(self):
         model = sn.Model()
         x_input = np.matrix('.05 .1')

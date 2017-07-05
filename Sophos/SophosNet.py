@@ -38,7 +38,11 @@ class Model():
         self.error_total = error_total
         # Get error for output layer
         
+
+        last_dE = 0
+        last_delta = 0
         error = list()
+        last_weights = 0
         # Iterate over every neuron to compute delta 
         for i in range(len(components)):
             # Set the current component
@@ -46,36 +50,44 @@ class Model():
             current_component = components[current_component_index]
 
             layer_output = pred
-            last_dE = 0
             # If the component is a layer adjust neuron weights
             if type(current_component) is Layer:
                 # Calculate dE/dw
                 
                 # No cached value - back of net
-                if last_dE == 0:
+                if last_dE is 0:
                     # dE/dOut
                     dEdOut = layer_output - Y
                     last_dE = dEdOut
-                print("dE/dOut: ", dEdOut)
+                # print("dE/dOut: ", dEdOut)
 
                 # Calculate dOut/dNet
                 activation_layer = components[current_component_index + 1]
                 dOutdNet = activation_layer.d_feed(activation_layer.getOutput())
-                print("dOut/dNet: ", dOutdNet)
+                # print("dOut/dNet: ", dOutdNet)
 
                 # Calculate dNet/dW
+                if current_component_index == 0:
+                    dNetdW = X
+                else:
+                    dNetdW = components[current_component_index-1].getOutput()
+                # print("dNet/dW: ", dNetdW)
                 
+                if current_component_index + 2 < len(components):
+                    prev_weights = last_weights
+                    prev_weights = prev_weights[1:]
+                    dEdOut = last_delta * prev_weights.T
+                    # print("new dEdOut: ", dEdOut)
 
-
-        # # error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
-        # for i in range(len(components)-2, 0, -1):
-        #     component = components[i]
-        #     if type(component) == Layer:
-        #         # Error for hidden layers
-        #         error.append(np.sum((component.getWeights() * error[0]) * components[i+1].d_feed(component.getOutput()))) 
-        # print("Error:", error)
-
-        # Adjust Weights Based on Error
+                delta = np.multiply(dEdOut, dOutdNet)
+                dEdW = np.multiply(delta, dNetdW)
+                last_weights = current_component.getWeights()
+                # Update Weights
+                current_component.updateWeights(dEdW)
+                last_delta = delta
+                # print("Updated Weights: ", current_component.getWeights())
+                # print("dE/dw: ", dEdW)
+                # print("delta: ", last_delta)
 
         
         return lastOut
@@ -93,6 +105,7 @@ class Model():
         for layer in self.components:
             lastOut = layer.feed(lastOut)
         return lastOut
+    
     def getTotalError(self):
         return self.error_total
 
@@ -111,6 +124,7 @@ class Layer():
         # Build Psi - Random Weights
         self.W = np.random.random_sample((num_inputs + 1, num_neurons))
         self.last_output = 0
+        self.learning_rate = 0.5
         
     def feed(self, X):
         biases = np.ones(X.shape[0])
@@ -137,6 +151,7 @@ class Layer():
         
     def updateWeights(self, X):
         # Adjust Weights by a value
+        self.W = self.W - np.multiply(self.learning_rate, X)
         pass
     
     def getOutput(self):

@@ -13,6 +13,7 @@ class Model():
     # Model will contain sequence of layers to feed data 
     def __init__(self):
         self.components = list()
+        self.lr = 0.5
     
     # Add a layer to the model
     def add(self, component):
@@ -69,8 +70,12 @@ class Model():
                 # Calculate dNet/dW
                 if current_component_index == 0:
                     dNetdW = X
+                    # Add Bias
+                    dNetdW = np.insert(dNetdW, 0, 1, axis=1)
                 else:
                     dNetdW = components[current_component_index-1].getOutput()
+                    # Add Bias
+                    dNetdW = np.insert(dNetdW, 0, 1, axis=1)
                 # print("dNet/dW: ", dNetdW)
                 
                 if current_component_index + 2 < len(components):
@@ -80,13 +85,15 @@ class Model():
                     # print("new dEdOut: ", dEdOut)
 
                 delta = np.multiply(dEdOut, dOutdNet)
-                dEdW = np.multiply(delta, dNetdW)
+                # print("Delta: ", delta)
+                # dEdW = np.multiply(delta, dNetdW)
+                dEdW = np.multiply(dNetdW.T, delta)
+                # print("dE/dw: ", dEdW)
                 last_weights = current_component.getWeights()
                 # Update Weights
-                current_component.updateWeights(dEdW)
+                current_component.updateWeights(dEdW, self.lr)
                 last_delta = delta
                 # print("Updated Weights: ", current_component.getWeights())
-                # print("dE/dw: ", dEdW)
                 # print("delta: ", last_delta)
 
         
@@ -105,12 +112,15 @@ class Model():
         for layer in self.components:
             lastOut = layer.feed(lastOut)
         return lastOut
-    
+
     def getTotalError(self):
         return self.error_total
 
     def predict(self, X):
         pass
+
+    def setLearningRate(self, lr):
+        self.lr = lr
 
 
 # In[525]:
@@ -134,7 +144,9 @@ class Layer():
         if X.shape[1] != self.W.shape[0]:
             raise ValueError("Wrong input shape")
         # Remember Last Output
+        last_output_no_bias = X * self.W
         self.last_output = X * self.W
+
         
         # Multiply
         return X * self.W
@@ -149,9 +161,9 @@ class Layer():
         # Set all of the weights to a new value
         self.W = X
         
-    def updateWeights(self, X):
+    def updateWeights(self, X, lr):
         # Adjust Weights by a value
-        self.W = self.W - np.multiply(self.learning_rate, X)
+        self.W = self.W - np.multiply(lr, X)
         pass
     
     def getOutput(self):

@@ -116,8 +116,14 @@ class Model():
     def getTotalError(self):
         return self.error_total
 
-    def predict(self, X):
-        pass
+    def predictStep(self, X):
+        # Step Function for prediction
+        lastOut = X
+        for layer in self.components:
+            lastOut = layer.feed(lastOut)
+        if lastOut > .5:
+            return 1
+        return 0
 
     def setLearningRate(self, lr):
         self.lr = lr

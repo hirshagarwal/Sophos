@@ -19,6 +19,7 @@ class MainTests(unittest.TestCase):
         l1.setWeights(w1)
         l2.setWeights(w2)
         activation = sn.Activation('sigmoid')
+        print("Total Error Test -")
         model.add(l1)
         model.add(activation)
         model.add(l2)

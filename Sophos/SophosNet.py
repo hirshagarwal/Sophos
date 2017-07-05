@@ -39,7 +39,33 @@ class Model():
         # Get error for output layer
         
         error = list()
-        
+        # Iterate over every neuron to compute delta 
+        for i in range(len(components)):
+            # Set the current component
+            current_component_index = len(components) - i -1
+            current_component = components[current_component_index]
+
+            layer_output = pred
+            last_dE = 0
+            # If the component is a layer adjust neuron weights
+            if type(current_component) is Layer:
+                # Calculate dE/dw
+                
+                # No cached value - back of net
+                if last_dE == 0:
+                    # dE/dOut
+                    dEdOut = layer_output - Y
+                    last_dE = dEdOut
+                print("dE/dOut: ", dEdOut)
+
+                # Calculate dOut/dNet
+                activation_layer = components[current_component_index + 1]
+                dOutdNet = activation_layer.d_feed(activation_layer.getOutput())
+                print("dOut/dNet: ", dOutdNet)
+
+                # Calculate dNet/dW
+                
+
 
         # # error.append(np.sum((Y - pred) * components[len(components)-1].d_feed(pred)))
         # for i in range(len(components)-2, 0, -1):
@@ -131,21 +157,34 @@ class Activation():
     
     def feed(self, X):
         if self.activation_function == 'step':
-            return np.piecewise(X, [X < 0, X >= 0], [0, 1])
+            out = np.piecewise(X, [X < 0, X >= 0], [0, 1])
         if self.activation_function == 'sigmoid':
-            return 1/(1 + np.exp(-X))
+            out = 1/(1 + np.exp(-X))
+            # self.d_output = np.multiply(X, (-X + 1))
         if self.activation_function == 'relu':
             np.maximum(X, 0, X)
-            return X
+            out =  X
+        self.last_output = out
+        return out
+
+    # Derivative of activation
     def d_feed(self, X):
         if self.activation_function == 'sigmoid':
-            return X * (1-X)
+            out = np.multiply(X, (-X + 1))
         if self.activation_function == 'relu':
-            return np.piecewise(X, [X < 0, X >= 0], [0, 1])
-        
+            out = np.piecewise(X, [X < 0, X >= 0], [0, 1])
+        self.d_output = out
+        return out
+
+
     def getType(self):
         return "Activation Function {fxn}".format(fxn=self.activation_function)
 
+    def getOutput(self):
+        return self.last_output
+
+    def getDerivativeOutput(self):
+        return self.d_output
 
 # In[529]:
 

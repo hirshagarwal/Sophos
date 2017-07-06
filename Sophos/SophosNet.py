@@ -150,7 +150,7 @@ class Layer():
         self.num_neurons = num_neurons
         self.num_inputs = num_inputs
         # Build Psi - Random Weights
-        self.W = np.random.random_sample((num_inputs + 1, num_neurons))
+        self.W = 2 * np.random.random_sample((num_inputs + 1, num_neurons)) - 1
         self.last_output = 0
         self.learning_rate = 0.1
         

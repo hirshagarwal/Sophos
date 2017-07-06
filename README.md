@@ -4,10 +4,12 @@ This is a repository designed to facilitate the understanding of artificial neur
 
 ## General Structure
 The general use of Sophos is based on the Keras framework. Different objects can be created and added to the model to form a network for data to flow through
+Numpy and the Sophos Net library are both important things to import.
 
 Import the library
 ```python
 import SophosNet as sn
+import numpy as np
 ```
 
 ## Layers
@@ -36,4 +38,17 @@ model = sn.Model()
 # Add layers created before to the model
 model.add(l1)
 model.add(a1)
+```
+
+### Training a model
+Models train almost entirely by themselves. Each time the train method runs it updates the weights. Putting it in a for loop is usually the best way to run it a number of times. The data input should be a numpy matrix.
+
+```python
+# Create example data to feed
+x_input = np.matrix('1 1')
+y_input = np.matrix('0')
+
+# Train the model 1000 times
+for i in range(1000):
+	model.train(x_input, y_input)
 ```

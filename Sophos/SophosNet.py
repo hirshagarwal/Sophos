@@ -15,9 +15,17 @@ class Model():
     # Add a layer to the model
     def add(self, component):
         self.components.append(component)
+        return self
         
     # Feed Data and Learn
     def train(self, X, Y):
+
+        # Check for type errors
+        if type(X) is not np.matrixlib.defmatrix.matrix:
+            raise TypeError("Input vector X should be of type numpy.matrix (np.matrix)")
+        if type(Y) is not np.matrixlib.defmatrix.matrix:
+            raise TypeError("Input vector Y should be of type numpy.matrix (np.matrix)")
+
         lastOut = X
         # Feed Data
         for layer in self.components:

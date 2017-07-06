@@ -30,7 +30,7 @@ class MainTests(unittest.TestCase):
             x_input = np.matrix('1 1')
             y_input = np.matrix('1')
             model.train(x_input, y_input)
-
+        
             # print("Total Error: ", model.getTotalError())
         # print("End Weights: ", l1.getWeights())
 

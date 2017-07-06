@@ -60,6 +60,13 @@ for i in range(1000):
 ```
 
 
+### Model Not Training
+There are many reasons why a model might not be training.
+The most common issue is not running it for long enough or on enough data. Every problem requires a different amount of data depending on its complexity, however usually the network will need to iterate over the entire data set at least a few times. 
+Another common issue is oversaturating the network with data that hasn't been normalized. If your data is too large it can oversaturate the sigmoid activation function and stop the model from training.
+[Understanding Activation Functions](https://github.com/hirshagarwal/Sophos/Documentation/Activation.md)
+
+
 ### Get Prediction
 There are multiple methods to get predictions from a model. The two basic implemented functions are predict and predictStep. The only difference is that predictStep run the output through a step function in order to return a binary value.
 
@@ -104,5 +111,4 @@ for i in range(1000):
 				if a == test_data_y: # Compare the test data to the target
 					correct += 1 # If the prediction was correct increment the counter
 		accuracy = correct/len(test_data) # This is the accuracy value
-
 ```

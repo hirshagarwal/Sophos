@@ -122,6 +122,13 @@ class Model():
             return 1
         return 0
 
+    # Normal 
+    def predict(self, X):
+        lastOut = X
+        for layer in self.components:
+            lastOut = layer.feed(lastOut)
+        return lastOut
+
     def setLearningRate(self, lr):
         self.lr = lr
 
@@ -152,7 +159,7 @@ class Layer():
 
         
         # Multiply
-        return X * self.W
+        return self.last_output
     
     def getShape(self):
         return [self.num_inputs + 1, self.num_neurons]

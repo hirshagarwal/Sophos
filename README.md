@@ -63,6 +63,15 @@ for i in range(1000):
 ### Get Prediction
 There are multiple methods to get predictions from a model. The two basic implemented functions are predict and predictStep. The only difference is that predictStep run the output through a step function in order to return a binary value.
 
+```python
+# Setup data to feed in (should be numpy matrix)
+x_data = ...
+
+# Feed in to get an output from the function
+model.predict(x_data)
+
+# Feed in to get a binary output
+model.predictStep(x_data)
 
 ### Getting accuracy with epochs
 The model object has a built in method to return an error rate, however this error rate corresponds to the error rate of the most recent data point, not the overall accuracy of the model. In order to test the accuracy of the model a test dataset should be isolated and run through the model for training.

@@ -29,3 +29,22 @@ model.add(a1)
 
 # Set the model learning rate - By default it's 0.1
 model.setLearningRate(0.1)
+
+# Create some made up data points
+x_input = np.matrix('0 1')
+y_input = np.matrix('0')
+
+x_input2 = np.matrix('1 0')
+y_input2 = np.matrix('1')
+
+# Run the training for 1000 iterations
+for i in range(1000):
+
+	# Train on the first data point
+	model.train(x_input, y_input)
+
+	# Train on the second data point
+	model.train(x_input2, y_input2)
+
+# Get the ending weights
+print("End weights: " l1.getWeights())

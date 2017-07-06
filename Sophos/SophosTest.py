@@ -31,8 +31,8 @@ class MainTests(unittest.TestCase):
             y_input = np.matrix('1')
             model.train(x_input, y_input)
 
-            print("Total Error: ", model.getTotalError())
-        print("End Weights: ", l1.getWeights())
+            # print("Total Error: ", model.getTotalError())
+        # print("End Weights: ", l1.getWeights())
 
     def test_TotalError(self):
         model = sn.Model()
@@ -46,7 +46,7 @@ class MainTests(unittest.TestCase):
         l2.setWeights(w2)
         activation1 = sn.Activation('sigmoid')
         activation2 = sn.Activation('sigmoid')
-        print("Total Error Test -")
+        # print("Total Error Test -")
         model.add(l1)
         model.add(activation1)
         model.add(l2)
@@ -54,9 +54,9 @@ class MainTests(unittest.TestCase):
         original_output = model.feed(x_input)
         for i in range(100):
             model.train(x_input, y)
-            print("Total Error:", model.getTotalError())
-        print("Original Output: ", original_output)
-        print("Trained Output: ", model.feed(x_input))
+            # print("Total Error:", model.getTotalError())
+        # print("Original Output: ", original_output)
+        # print("Trained Output: ", model.feed(x_input))
 
 
     def test_Activation(self):

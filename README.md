@@ -64,7 +64,7 @@ for i in range(1000):
 There are many reasons why a model might not be training.
 The most common issue is not running it for long enough or on enough data. Every problem requires a different amount of data depending on its complexity, however usually the network will need to iterate over the entire data set at least a few times. 
 Another common issue is oversaturating the network with data that hasn't been normalized. If your data is too large it can oversaturate the sigmoid activation function and stop the model from training.
-[Understanding Activation Functions](https://github.com/hirshagarwal/Sophos/Documentation/Activation.md)
+[Understanding Activation Functions](https://github.com/hirshagarwal/Sophos/blob/master/Documentation/Activation.md)
 
 
 ### Get Prediction

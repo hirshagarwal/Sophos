@@ -72,26 +72,37 @@ model.predict(x_data)
 
 # Feed in to get a binary output
 model.predictStep(x_data)
+```
+
 
 ### Getting accuracy with epochs
 The model object has a built in method to return an error rate, however this error rate corresponds to the error rate of the most recent data point, not the overall accuracy of the model. In order to test the accuracy of the model a test dataset should be isolated and run through the model for training.
 It's best to run the testing set through the model regularly in order to observe the accuracy trend. 
+
+The code below is a theoretical example - It is not designed to run in its current form
+
 ```python
 # Setup some training and test data - All of them should be filled in with a numpy matrix
+# The training data should be in a list so each pair can be individuall accessed
 train_x = ... # Fill in with numpy matrix
 train_y = ...
 
+# The test data should be in a list so each pair can be individually accessed
 test_x = ...
 test_y = ...
 
 # Run for 1000 iterations
 for i in range(1000):
 	# Train on some data
-	model.train([data_x], [data_y])
+	model.train(train_x, train_y)
 
 	# Check accuracy if at the end of an epoch
 	correct = 0 # Counter for the number of correctly classified points
 	if i % 50 == 0:
-
+		for j in range(len(test_data)):
+			a = model.predictStep(test_data_x[j]) # Get a prediction for each point of test data
+				if a == test_data_y: # Compare the test data to the target
+					correct += 1 # If the prediction was correct increment the counter
+		accuracy = correct/len(test_data) # This is the accuracy value
 
 ```

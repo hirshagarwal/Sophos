@@ -1,6 +1,3 @@
-
-# coding: utf-8
-
 # Setup import
 import numpy as np
 

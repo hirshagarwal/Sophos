@@ -14,7 +14,7 @@ import numpy as np
 
 ## Layers
 There are two types of objects currently available - Fully Connected Layers and Activation Layers
-Fully connected layers are feed forward layers in which the input size and number of neurons are specified.
+Fully connected layers are feed forward layers in which the input size and number of neurons are specified. On creation the weights of a fully connected layer are randomly initialized.
 Activation Layers specify an activation function. Currently the implemented functions are Heaviside, ReLU and Sigmoid.
 
 Example:
@@ -42,6 +42,7 @@ model.add(a1)
 
 ### Training a model
 Models train almost entirely by themselves. Each time the train method runs it updates the weights. Putting it in a for loop is usually the best way to run it a number of times. The data input should be a numpy matrix.
+In order to train a model each fully connected layer must be follwed by a sigmoid or relu activation layer - Because the step function is not differentiable it's not compatible with gradient descent.
 
 ```python
 # Create example data to feed

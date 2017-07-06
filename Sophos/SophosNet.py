@@ -137,7 +137,7 @@ class Layer():
         # Build Psi - Random Weights
         self.W = np.random.random_sample((num_inputs + 1, num_neurons))
         self.last_output = 0
-        self.learning_rate = 0.5
+        self.learning_rate = 0.1
         
     def feed(self, X):
         biases = np.ones(X.shape[0])

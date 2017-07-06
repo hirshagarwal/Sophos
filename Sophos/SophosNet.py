@@ -71,6 +71,8 @@ class Model():
                 activation_layer = components[current_component_index + 1]
                 dOutdNet = activation_layer.d_feed(activation_layer.getOutput())
                 # print("dOut/dNet: ", dOutdNet)
+                if dOutdNet.all() == 0:
+                    raise ValueError('Warning: Activation appears to be oversaturated - Consider normalizing input data')
 
                 # Calculate dNet/dW
                 if current_component_index == 0:

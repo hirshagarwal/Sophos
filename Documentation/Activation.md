@@ -19,3 +19,7 @@ One issue with the ReLU function is that it's not differentiable at 0. Also due 
 The sigmoid function is one of the most common activation functions. It is defined as:
 	1/(1-e^-x)
 This function has the advantage of being differentiable at all points. The most common issue with sigmoid functions is oversaturation. When x is large the derivative of the function approaches 0, yielding the same problem as ReLU where at 0 the unit becomes dead and can no longer learn.
+
+### Heaviside
+The heaviside function is simply a step function:
+	f(x) = d/dx \infty

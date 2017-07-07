@@ -18,6 +18,87 @@ class Model():
     def add(self, component):
         self.components.append(component)
         return self
+
+    def train_batch(self, X, Y, batch_size=16, lr=0.1):
+        self.lr = lr
+        # Check for type errors
+        if type(X) is not np.matrixlib.defmatrix.matrix:
+            raise TypeError("Input vector X should be of type numpy.matrix (np.matrix)")
+        if type(Y) is not np.matrixlib.defmatrix.matrix:
+            raise TypeError("Input vector Y should be of type numpy.matrix (np.matrix)")
+
+        lastOut = X
+        # Feed Data
+        for layer in self.components:
+            lastOut = layer.feed(lastOut)
+        pred = lastOut
+
+        # Verify that output layer is an activation function
+        if type(self.components[len(self.components)-1]) != Activation:
+            raise ValueError("Output layer must have activation function")
+
+        # Store the components as a local variable for easier access
+        components = self.components
+        # Store the total error
+        error_total = np.sum(0.5 * np.square(Y-pred))
+        self.error_total = error_total
+
+        # Backpropagation
+        last_layer_output = pred
+        last_delta = 0
+        delta_w = 0
+        all_the_way_right = True
+        for i in range(len(components)):
+            # Set the current component - Start all the way to the right
+            current_component_index = len(components) - i -1
+            current_component = components[current_component_index]
+
+            # If the component is a layer adjust neuron weights
+            if type(current_component) is Layer:
+                
+                # Calculate first layer values
+                if all_the_way_right:
+                    dEdOut = last_layer_output-Y
+
+                    # Calculate dOut/dNet
+                    dOutdNet = np.multiply(last_layer_output, (1-last_layer_output))
+
+                    # No longer all the way to the right
+                    all_the_way_right = False
+
+                else:
+
+                    # Get the weights of the layer to the right - biases removed
+                    last_weights = components[current_component_index+2].getWeights()[1:]
+                    dEdOut = np.dot(last_delta, last_weights)
+
+                    # Calculate dOut/dNet
+                    dOutdNet = np.multiply(current_component.getOutput(), (1-current_component.getOutput()))
+
+                    # Update the weights
+                    components[current_component_index+2].updateWeights(delta_w, self.lr)
+                
+                # Calculate Delta (Full)
+                delta = np.multiply(dEdOut, dOutdNet)
+                # Store uncompressed delta
+                last_delta = delta
+
+                # Compress Delta
+                delta_compressed = np.sum(delta, axis=0)
+
+                dNetdW = 0
+                # Calculate dNet/dW
+                if current_component_index > 0:
+                    # Get the values coming out of the previous layer
+                    dNetdW = components[current_component_index-2].getOutput()
+                else:
+                    # If current layer is all the way on the left than the values feeding in are the input
+                    dNetdW = X
+
+                # Add bias to dNet/dW
+                dNetdW_bias = np.insert(dNetdW, 0, 1, axis=1).T
+
+                delta_w = np.multiply(dNetdW_bias, delta_compressed)
         
     # Feed Data and Learn
     def train(self, X, Y):

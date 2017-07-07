@@ -51,6 +51,31 @@ class MainTests(unittest.TestCase):
         self.assertTrue(t1)
         self.assertTrue(t2)
 
+    def test_BackpropagationMultiLayerBatched(self):
+        model = sn.Model()
+        x_input = np.matrix('0 1; 1 0')
+        y = np.matrix('0; 1')
+        l1 = sn.Layer(2, 1)
+        # l2 = sn.Layer(2, 1)
+        # l1.setWeights(w1)
+        # l2.setWeights(w2)
+        activation1 = sn.Activation('sigmoid')
+        # activation2 = sn.Activation('sigmoid')
+        model.add(l1)
+        model.add(activation1)
+        # model.add(l2)
+        # model.add(activation2)
+        original_output = model.feed(x_input)
+        
+        for i in range(1000):
+            model.train_batch(x_input, y)
+            if i%100 == 0:
+                print("Error: ", model.getTotalError())
+        print("Weights: ", l1.getWeights())    
+        print("Original Output: ", original_output)
+        print("Trained Output: ", model.feed(np.matrix('0 1')))
+
+
     def test_BackpropagationMultiLayer(self):
         model = sn.Model()
         x_input = np.matrix('.05 .1')

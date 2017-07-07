@@ -92,7 +92,7 @@ The code below is a theoretical example - It is not designed to run in its curre
 
 ```python
 # Setup some training and test data - All of them should be filled in with a numpy matrix
-# The training data should be in a list so each pair can be individuall accessed
+# The training data should be in a list so each pair can be individually accessed
 train_x = ... # Fill in with numpy matrix
 train_y = ...
 
@@ -114,3 +114,6 @@ for i in range(1000):
 					correct += 1 # If the prediction was correct increment the counter
 		accuracy = correct/len(test_data) # This is the accuracy value
 ```
+
+# Batch Training
+** Not yet implemented **

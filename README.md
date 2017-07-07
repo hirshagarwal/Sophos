@@ -34,6 +34,8 @@ a2 = sn.Activation('relu')
 a3 = sn.Activation('step')
 ```
 
+For more information about activation layer please see further documentation: [Understanding Activation Functions](https://github.com/hirshagarwal/Sophos/blob/master/Documentation/Activation.md)
+
 ## Models
 A model contains a sequence of layers. When you train or run the model it feeds data from layer to layer in order to generate an output.
 

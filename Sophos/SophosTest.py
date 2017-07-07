@@ -13,28 +13,45 @@ class MainTests(unittest.TestCase):
         # Build Model
         model = sn.Model()
         l1 = sn.Layer(2, 1)
-        print(l1.getWeights())
         activation1 = sn.Activation('sigmoid')
         model.add(l1)
+        l1.setWeights(np.matrix('.5; .5; .5'))
         model.add(activation1)
         model.setLearningRate(0.1)
-        # print("Random: ", np.random.rand(2))
-        # Train Model
-        for i in range(10000):
-        # x = np.random.rand(2)
 
-            x_input = np.matrix('0 0')
-            y_input = np.matrix('0')
-            model.train(x_input, y_input)
+        # Setup data and train
+        x_input = np.matrix('0 0')
+        y_input = np.matrix('0')
+        model.train(x_input, y_input)
 
-            x_input = np.matrix('1 1')
-            y_input = np.matrix('1')
-            model.train(x_input, y_input)
-        
-            # print("Total Error: ", model.getTotalError())
-        # print("End Weights: ", l1.getWeights())
+        # First Weights
+        weights_first = l1.getWeights()
 
-    def test_TotalError(self):
+        x_input = np.matrix('1 1')
+        y_input = np.matrix('1')
+        model.train(x_input, y_input)
+
+        # Set ending weights
+        weights_end = l1.getWeights()
+
+
+        # Set expected weights
+        weights_first_expected = np.matrix('4853; 5000; 5000')
+        weights_end_expected = np.matrix('4881; 5027; 5027')
+        weights_first = (weights_first * 10000).astype(int)
+        weights_end = (weights_end * 10000).astype(int)
+        t1 = False
+        t2 = False
+        if (weights_first == weights_first_expected).all():
+            t1 = True
+        if (weights_end == weights_end_expected).all():
+            t2 = True
+
+        # Equality Tests
+        self.assertTrue(t1)
+        self.assertTrue(t2)
+
+    def test_BackpropagationMultiLayer(self):
         model = sn.Model()
         x_input = np.matrix('.05 .1')
         y = np.matrix('.01 .99')
@@ -46,20 +63,24 @@ class MainTests(unittest.TestCase):
         l2.setWeights(w2)
         activation1 = sn.Activation('sigmoid')
         activation2 = sn.Activation('sigmoid')
-        # print("Total Error Test -")
         model.add(l1)
         model.add(activation1)
         model.add(l2)
         model.add(activation2)
         original_output = model.feed(x_input)
-        for i in range(100):
-            model.train(x_input, y)
-            # print("Total Error:", model.getTotalError())
-        # print("Original Output: ", original_output)
-        # print("Trained Output: ", model.feed(x_input))
+        model.train(x_input, y)
+        updated_weights = l2.getWeights()
+        updated_weights_l1 = l1.getWeights()
+        expected_weights = np.matrix('.53075072 0.61904912; 0.35891648 0.51130127; 0.40866619 0.56137012')
+        expected_weights_l1 = np.matrix('0.34561432 0.34502287; 0.14978072 0.24975114; 0.19956143 0.29950229')
+        self.assertEqual(updated_weights_l1.all(), expected_weights_l1.all())
+        self.assertEqual(updated_weights.all(), expected_weights.all())
 
+    def test_backpropagationSingleLayer(self):
 
-    def test_Activation(self):
+        pass
+
+    def test_TotalError(self):
         model = sn.Model()
         x_input = np.matrix('.05 .1')
         y = np.matrix('.01 .99')
@@ -77,10 +98,6 @@ class MainTests(unittest.TestCase):
         model.train(x_input, y)
         # Value confirmed from online source and by hand
         self.assertEqual(model.getTotalError(), 0.29837110876000272)
-
-    def test_Training(self):
-        # TODO - Add test for training model
-        pass
 
     def test_ForwardProp(self):
         self.model = sn.Model()

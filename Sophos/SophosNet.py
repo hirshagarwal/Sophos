@@ -9,7 +9,9 @@ class Model():
     
     # Model will contain sequence of layers to feed data 
     def __init__(self):
+        # Made a list to hold all of the components of the model
         self.components = list()
+        # Set default learning rate
         self.lr = 0.5
     
     # Add a layer to the model
@@ -37,14 +39,14 @@ class Model():
         if type(self.components[len(self.components)-1]) != Activation:
             raise ValueError("Output layer must have activation function")
         
-        # Optimize
+        # Store the components as a local variable for easier access
         components = self.components
         # Store the total error
         error_total = np.sum(0.5 * np.square(Y-pred))
         self.error_total = error_total
         # Get error for output layer
         
-
+        # Begin backpropagation
         last_dE = 0
         last_delta = 0
         error = list()
@@ -106,6 +108,7 @@ class Model():
         
         return lastOut
     
+    # Display the structure of the model
     def show(self):
         model_display = ""
         for component in self.components:
@@ -114,15 +117,18 @@ class Model():
         model_display += "---------------"
         return model_display
 
+    # Feed data through all of the layers in the model
     def feed(self, X):
         lastOut = X
         for layer in self.components:
             lastOut = layer.feed(lastOut)
         return lastOut
 
+    # Get the total error of the last training point run through the model
     def getTotalError(self):
         return self.error_total
 
+    # Gets a prediction and runs the output through a step function with a threshold at 0.5
     def predictStep(self, X):
         # Step Function for prediction
         lastOut = X
@@ -132,13 +138,14 @@ class Model():
             return 1
         return 0
 
-    # Normal 
+    # Gets a raw prediction from the model
     def predict(self, X):
         lastOut = X
         for layer in self.components:
             lastOut = layer.feed(lastOut)
         return lastOut
 
+    # Set the learning rate
     def setLearningRate(self, lr):
         self.lr = lr
 

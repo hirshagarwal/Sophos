@@ -53,27 +53,33 @@ class MainTests(unittest.TestCase):
 
     def test_BackpropagationMultiLayerBatched(self):
         model = sn.Model()
-        x_input = np.matrix('0 1; 1 0')
-        y = np.matrix('0; 1')
-        l1 = sn.Layer(2, 1)
-        # l2 = sn.Layer(2, 1)
-        # l1.setWeights(w1)
-        # l2.setWeights(w2)
+        x_input = np.matrix('.05 .1; .01 .1')
+        y = np.matrix('.01 .99; .02 1.1')
+        w1 = np.matrix('.35 .35; .15 .25; .20 .30')
+        w2 = np.matrix('.6 .6; .4 .5; .45 .55')
+        l1 = sn.Layer(2, 2)
+        l2 = sn.Layer(2, 2)
+        l1.setWeights(w1)
+        l2.setWeights(w2)
         activation1 = sn.Activation('sigmoid')
-        # activation2 = sn.Activation('sigmoid')
+        activation2 = sn.Activation('sigmoid')
         model.add(l1)
         model.add(activation1)
-        # model.add(l2)
-        # model.add(activation2)
+        model.add(l2)
+        model.add(activation2)
         original_output = model.feed(x_input)
-        
-        for i in range(1000):
+        first_error = 0
+        final_error = 0
+
+        for i in range(100):
             model.train_batch(x_input, y)
-            if i%100 == 0:
-                print("Error: ", model.getTotalError())
-        print("Weights: ", l1.getWeights())    
-        print("Original Output: ", original_output)
-        print("Trained Output: ", model.feed(np.matrix('0 1')))
+            if first_error == 0:
+                first_error = model.getTotalError()
+        final_error = model.getTotalError()
+
+        # Compute error improvement
+        change_error = final_error-first_error
+        self.assertTrue(change_error<0)
 
 
     def test_BackpropagationMultiLayer(self):

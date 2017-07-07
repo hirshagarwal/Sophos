@@ -99,6 +99,7 @@ class Model():
                 dNetdW_bias = np.insert(dNetdW, 0, 1, axis=1).T
 
                 delta_w = np.multiply(dNetdW_bias, delta_compressed)
+                
         
     # Feed Data and Learn
     def train(self, X, Y):

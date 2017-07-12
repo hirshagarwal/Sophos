@@ -60,8 +60,10 @@ class Model():
                 if all_the_way_right:
                     dEdOut = last_layer_output-Y
 
+                    activation_component = components[current_component_index+1]
                     # Calculate dOut/dNet
-                    dOutdNet = np.multiply(last_layer_output, (1-last_layer_output))
+                    dOutdNet = activation_component.d_feed(last_layer_output)
+                    # dOutdNet = np.multiply(last_layer_output, (1-last_layer_output))
 
                     # No longer all the way to the right
                     all_the_way_right = False
@@ -71,9 +73,11 @@ class Model():
                     # Get the weights of the layer to the right - biases removed
                     last_weights = components[current_component_index+2].getWeights()[1:]
                     dEdOut = np.dot(last_delta, last_weights)
+                    activation_component = components[current_component_index + 1]
 
                     # Calculate dOut/dNet
-                    dOutdNet = np.multiply(current_component.getOutput(), (1-current_component.getOutput()))
+                    dOutdNet = activation_component.d_feed(current_component.getOutput())
+                    # dOutdNet = np.multiply(current_component.getOutput(), (1-current_component.getOutput()))
 
                     # Update the weights
                     components[current_component_index+2].updateWeights(delta_w, self.lr)

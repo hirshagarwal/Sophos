@@ -9,7 +9,7 @@ class MainTests(unittest.TestCase):
         self.model_gauss = sg.Model()
 
     def test_LinearClassification(self):
-        
+        print("Linear Classification Test")
         # Build Model
         model = sn.Model()
         l1 = sn.Layer(2, 1)
@@ -51,7 +51,40 @@ class MainTests(unittest.TestCase):
         self.assertTrue(t1)
         self.assertTrue(t2)
 
+    def test_BackpropagationMultiLayerBatched(self):
+        print("Backpropagatrion Multi Layer Batch Test")
+        model = sn.Model()
+        x_input = np.matrix('.05 .1; .01 .1')
+        y = np.matrix('.01 .99; .02 1.1')
+        w1 = np.matrix('.35 .35; .15 .25; .20 .30')
+        w2 = np.matrix('.6 .6; .4 .5; .45 .55')
+        l1 = sn.Layer(2, 2)
+        l2 = sn.Layer(2, 2)
+        l1.setWeights(w1)
+        l2.setWeights(w2)
+        activation1 = sn.Activation('sigmoid')
+        activation2 = sn.Activation('sigmoid')
+        model.add(l1)
+        model.add(activation1)
+        model.add(l2)
+        model.add(activation2)
+        original_output = model.feed(x_input)
+        first_error = 0
+        final_error = 0
+
+        for i in range(100):
+            model.train_batch(x_input, y)
+            if first_error == 0:
+                first_error = model.getTotalError()
+        final_error = model.getTotalError()
+
+        # Compute error improvement
+        change_error = final_error-first_error
+        self.assertTrue(change_error<0)
+
+
     def test_BackpropagationMultiLayer(self):
+        print("Backpropagation Multi Layer Test")
         model = sn.Model()
         x_input = np.matrix('.05 .1')
         y = np.matrix('.01 .99')
@@ -81,6 +114,7 @@ class MainTests(unittest.TestCase):
         pass
 
     def test_TotalError(self):
+        print("Total Error Test")
         model = sn.Model()
         x_input = np.matrix('.05 .1')
         y = np.matrix('.01 .99')
@@ -100,6 +134,7 @@ class MainTests(unittest.TestCase):
         self.assertEqual(model.getTotalError(), 0.29837110876000272)
 
     def test_ForwardProp(self):
+        print("Forward Propagation Test")
         self.model = sn.Model()
         l1 = sn.Layer(2, 2)
         l2 = sn.Layer(2, 2)
@@ -117,6 +152,7 @@ class MainTests(unittest.TestCase):
         self.assertEqual(result, 2.5)
 
     def test_FeedLayer(self):
+        print("Layer Feed Test")
         i = np.matrix(('1, 3, 3'))
         input_with_bias = np.matrix(('1, 1, 3, 3'))
         l1 = sn.Layer(3,2)
@@ -126,6 +162,7 @@ class MainTests(unittest.TestCase):
         self.assertTrue(testValue)
 
     def test_GaussModel(self):
+        print("Gaussian Model Test")
         # Mean and covariance
         mu = np.matrix('0 0')
         sigma = np.matrix('1 0; 0 1')
@@ -137,6 +174,7 @@ class MainTests(unittest.TestCase):
         self.assertEqual(output, 0.0029150244650281935)
 
     def test_GaussMuClass(self):
+        print("Gaussian Mu Class Test")
         input_data = np.matrix('1 1; 2 2; 3 3; 5 5')
         expectedResult = np.matrix('2.75 2.75')
         result = self.model_gauss.mu_class(input_data)
@@ -145,6 +183,7 @@ class MainTests(unittest.TestCase):
         pass
 
     def test_LayerShape(self):
+        print("Layer Shape Test")
         baseShape = [2, 3]
         expectedShape = [3, 3]
         L1 = sn.Layer(baseShape[0], baseShape[1])

@@ -22,4 +22,5 @@ This function has the advantage of being differentiable at all points. The most 
 
 ### Heaviside
 The heaviside function is simply a step function:
-	f(x) = d/dx \infty
+	f(x) = d/dx[max(x, 0)]
+This function is primarily useful for single layer networks as it is not differentiable and therefore untrainable. Usually it's best to use a sigmoid as it can fairly accuractely emulate the behavior of a step function while still being trainable.

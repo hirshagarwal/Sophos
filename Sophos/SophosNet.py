@@ -23,9 +23,9 @@ class Model():
         self.lr = lr
         # Check for type errors
         if type(X) is not np.matrixlib.defmatrix.matrix:
-            raise TypeError("Input vector X should be of type numpy.matrix (np.matrix)")
+            raise TypeError("Sophos: Input vector X should be of type numpy.matrix (np.matrix)")
         if type(Y) is not np.matrixlib.defmatrix.matrix:
-            raise TypeError("Input vector Y should be of type numpy.matrix (np.matrix)")
+            raise TypeError("Sophos: Input vector Y should be of type numpy.matrix (np.matrix)")
 
         lastOut = X
         # Feed Data
@@ -35,7 +35,7 @@ class Model():
 
         # Verify that output layer is an activation function
         if type(self.components[len(self.components)-1]) != Activation:
-            raise ValueError("Output layer must have activation function")
+            raise ValueError("Sophos: Output layer must have activation function")
 
         # Store the components as a local variable for easier access
         components = self.components
@@ -116,9 +116,9 @@ class Model():
 
         # Check for type errors
         if type(X) is not np.matrixlib.defmatrix.matrix:
-            raise TypeError("Input vector X should be of type numpy.matrix (np.matrix)")
+            raise TypeError("Sophos: Input vector X should be of type numpy.matrix (np.matrix)")
         if type(Y) is not np.matrixlib.defmatrix.matrix:
-            raise TypeError("Input vector Y should be of type numpy.matrix (np.matrix)")
+            raise TypeError("Sophos: Input vector Y should be of type numpy.matrix (np.matrix)")
 
         lastOut = X
         # Feed Data
@@ -129,7 +129,7 @@ class Model():
         
         # Verify that output layer is an activation function
         if type(self.components[len(self.components)-1]) != Activation:
-            raise ValueError("Output layer must have activation function")
+            raise ValueError("Sophos: Output layer must have activation function")
         
         # Store the components as a local variable for easier access
         components = self.components
@@ -166,7 +166,7 @@ class Model():
                 dOutdNet = activation_layer.d_feed(activation_layer.getOutput())
                 # print("dOut/dNet: ", dOutdNet)
                 if dOutdNet.all() == 0:
-                    raise ValueError('Warning: Activation appears to be oversaturated - Consider normalizing input data')
+                    raise ValueError('Sophos: Warning: Activation appears to be oversaturated - Consider normalizing input data')
 
                 # Calculate dNet/dW
                 if current_component_index == 0:
@@ -261,7 +261,7 @@ class Layer():
         X = np.insert(X, 0, biases, axis=1)
         # Error checking
         if X.shape[1] != self.W.shape[0]:
-            raise ValueError("Wrong input shape")
+            raise ValueError("Sophos: Wrong input shape")
         # Remember Last Output
         last_output_no_bias = X * self.W
         self.last_output = X * self.W
@@ -278,6 +278,8 @@ class Layer():
     
     def setWeights(self, X):
         # Set all of the weights to a new value
+        if X.shape != self.W.shape:
+            raise ValueError("Sophos: Weight input does not match shape of existing weight matrix")
         self.W = X
         
     def updateWeights(self, X, lr):
@@ -287,7 +289,8 @@ class Layer():
     
     def getOutput(self):
         return self.last_output
-    
+        
+
     def getType(self):
         return "Dense Layer"
 

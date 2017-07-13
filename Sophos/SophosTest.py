@@ -8,6 +8,12 @@ class MainTests(unittest.TestCase):
     def setUp(self):
         self.model_gauss = sg.Model()
 
+    def test_SetWeightError(self):
+        print("Set Weight Error Test")
+        l1 = sn.Layer(2, 1)
+        l1.setWeights(np.matrix('0; 0; 0'))
+        
+
     def test_LinearClassification(self):
         print("Linear Classification Test")
         # Build Model

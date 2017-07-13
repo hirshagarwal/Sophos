@@ -54,8 +54,8 @@ class MainTests(unittest.TestCase):
     def test_BackpropagationMultiLayerBatched(self):
         print("Backpropagatrion Multi Layer Batch Test")
         model = sn.Model()
-        x_input = np.matrix('.05 .1; .01 .1')
-        y = np.matrix('.01 .99; .02 1.1')
+        x_input = np.matrix('.05 .1; .01 .1; .05 .1')
+        y = np.matrix('.01 .99; .02 1.1; .01 .99')
         w1 = np.matrix('.35 .35; .15 .25; .20 .30')
         w2 = np.matrix('.6 .6; .4 .5; .45 .55')
         l1 = sn.Layer(2, 2)

@@ -87,9 +87,6 @@ class Model():
                 # Store uncompressed delta
                 last_delta = delta
 
-                # Compress Delta
-                delta_compressed = np.sum(delta, axis=0)
-
                 dNetdW = 0
                 # Calculate dNet/dW
                 if current_component_index > 0:
@@ -99,10 +96,19 @@ class Model():
                     # If current layer is all the way on the left than the values feeding in are the input
                     dNetdW = X
 
+                    # Add bias to dNet/dW
+                    dNetdW_bias = np.insert(dNetdW, 0, 1, axis=1).T
+
+                    # Calculate Delta W and update weights
+                    delta_w = np.dot(dNetdW_bias, last_delta)
+
+                    current_component.updateWeights(delta_w, self.lr)
+
+
                 # Add bias to dNet/dW
                 dNetdW_bias = np.insert(dNetdW, 0, 1, axis=1).T
 
-                delta_w = np.multiply(dNetdW_bias, delta_compressed)
+                delta_w = np.dot(dNetdW_bias, delta)
                 
         
     # Feed Data and Learn

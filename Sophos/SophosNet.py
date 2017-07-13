@@ -278,6 +278,8 @@ class Layer():
     
     def setWeights(self, X):
         # Set all of the weights to a new value
+        if X.shape != self.W.shape:
+            raise ValueError("Weight input does not match shape of existing weight matrix")
         self.W = X
         
     def updateWeights(self, X, lr):

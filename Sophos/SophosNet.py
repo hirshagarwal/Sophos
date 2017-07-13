@@ -72,7 +72,7 @@ class Model():
 
                     # Get the weights of the layer to the right - biases removed
                     last_weights = components[current_component_index+2].getWeights()[1:]
-                    dEdOut = np.dot(last_delta, last_weights)
+                    dEdOut = np.dot(last_delta, last_weights.T)
                     activation_component = components[current_component_index + 1]
 
                     # Calculate dOut/dNet

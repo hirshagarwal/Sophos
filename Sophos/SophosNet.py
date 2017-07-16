@@ -20,6 +20,7 @@ class Model():
         return self
     
     # TODO - Add batch training comments
+	“”” Batch Training Method - Designed to train faster using tensor based batch input operations“””
     def train_batch(self, X, Y, batch_size=16, lr=0.1):
         self.lr = lr
         # Check for type errors

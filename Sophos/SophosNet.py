@@ -18,7 +18,8 @@ class Model():
     def add(self, component):
         self.components.append(component)
         return self
-
+    
+    # TODO - Add batch training comments
     def train_batch(self, X, Y, batch_size=16, lr=0.1):
         self.lr = lr
         # Check for type errors

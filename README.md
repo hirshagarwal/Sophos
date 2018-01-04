@@ -116,4 +116,3 @@ for i in range(1000):
 ```
 
 # Batch Training
-** Not yet implemented **
